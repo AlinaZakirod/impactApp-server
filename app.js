@@ -10,6 +10,10 @@ const logger = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const cors = require("cors");
+const passport = require("passport");
+// const LocalStrategy = require("./configs/passport/local.strategy").Strategy;
+// // const MongoStore = require("connect-mongo")(session);
+// const bcrypt = require("bcryptjs");
 
 // enables database connection
 require("./configs/database/db.setup");
@@ -64,15 +68,23 @@ app.use(
 // 🚨🚨🚨 must come after the sessions 🚨🚨🚨
 require("./configs/passport/passport.setup")(app);
 
-// default value for title local
-app.locals.title = "Express - Generated with IronGenerator";
+// ./configs/passport/local.strategy AND ./configs/passport/serializers are not needed cuz they r required in passport.setup;
 
+//initialize passport and passport-sessions
+// we already require it
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// default value for title local
+app.locals.title = "Make an Impact!";
+
+//require routes:
 const index = require("./routes/index");
 app.use("/", index);
 
 const authRoutes = require("./routes/auth.routes");
 app.use("/", authRoutes);
 
+app.use("/", require("./routes/categories.routes"));
+
 module.exports = app;
-//
-//jdfjf
