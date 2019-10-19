@@ -30,16 +30,21 @@ router.post("/", (req, res, next) => {
     .catch(err => console.log("Error displaying all categories", err));
 });
 
-// Read 2 display details of a particular category
-router.post("/category/:theId", (req, res, next) => {
-  Category.findById(req.params.theId);
-});
-
 //Delete category route:
 router.post("/category/:theId/delete", (req, res, next) => {
   Category.findByIdAndDelete(req.params.theId)
     .then(() => console.log("deleted"))
     .catch(err => console.log("error while delteing the category: ", err));
+});
+//
+
+// Read 2 display details of a particular category
+router.post("/category/:theId", (req, res, next) => {
+  Category.findById(req.params.theId)
+    .then(theCategory => {
+      res.json({ theCategory });
+    })
+    .catch();
 });
 
 module.exports = router;
