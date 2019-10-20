@@ -36,7 +36,12 @@ router.post("/category/:theId/delete", (req, res, next) => {
     .then(() => console.log("deleted"))
     .catch(err => console.log("error while delteing the category: ", err));
 });
-//
+//Edit route:
+router.post("/category/:theId/update", (req, res, next) => {
+  Category.findByIdAndUpdate(req.params.theId, req.body)
+    .then(updatedCategory => console.log({ updatedCategory }))
+    .catch(err => console.log("Erroe while updating category ", err));
+});
 
 // Read 2 display details of a particular category
 router.post("/category/:theId", (req, res, next) => {
