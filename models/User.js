@@ -18,14 +18,18 @@ const userSchema = new Schema(
     score: {
       type: Number
     },
-    completedActs: {
-      type: Schema.Types.ObjectId,
-      ref: "Act"
-    },
-    suggestedActs: {
-      type: Schema.Types.ObjectId,
-      ref: "Act"
-    },
+    completedActs: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Act"
+      }
+    ],
+    suggestedActs: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Act"
+      }
+    ],
     encryptedPassword: {
       type: String,
       required: true

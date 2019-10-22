@@ -41,22 +41,37 @@ router.post("/act/:actId/delete", (req, res, next) => {
 
 //Edit act route:
 router.post("/act/:actId/update", (req, res, next) => {
-  Act.findById(req.param.actId).then(theAction => {
-    //we update not the Act itself, but the User who did the Act: Act changes score of the User and the completed and suggested acts
-    User.findByIdAndUpdate(
-      req.user._id,
-      {
-        score: req.body.value + req.body.currentScore,
-        $push: { completedActs: theAction },
-        $pull: { suggestedActs: theAction }
-      },
-      { new: true }
-    )
-      .then(updatedAct => res.json({ updatedAct }))
-      .catch(err => console.log("Error while updating the act ", err));
-    //{new: true} is added to have accurate change in Postman, without it {new: true} it will be one step behind
-  }); // end Act.findById
+  Act.findById(req.param.actId)
+    .then(theAct => {
+      //we update not the Act itself, but the User who did the Act: Act changes score of the User and the completed and suggested acts
+      console.log(req.user.completedActs);
+      console.log(req.user.suggestedActs);
+      console.log(req.user);
+      User.findByIdAndUpdate(
+        req.user._id,
+        {
+          score: (req.user.score = +req.body.value),
+          // score: req.body.value + req.body.currentScore,
+
+          $push: { completedActs: theAct },
+          $pull: { suggestedActs: theAct }
+        },
+        { new: true }
+      )
+        .then(updatedUser => res.json({ updatedUser }))
+        .catch(err => console.log("Error while updating the User ", err));
+      //{new: true} is added to have accurate change in Postman, without it {new: true} it will be one step behind
+    })
+    .catch(err =>
+      console.log("Error while submiting the Act as complete ", err)
+    ); // end Act.findById
 });
+
+// router.post('/act/:actId/update', (req, res, next)=>{
+//   Act.findById(req.params.actId)
+//   .than()
+//   .catch()
+// })
 
 //Read - display details of the act
 router.post("/act/:actId", (req, res, next) => {

@@ -14,23 +14,19 @@ authRouter.post("/api/signup", (req, res, next) => {
 
   if (fullName == "" || email == "" || password.match(/[0-9]/) === null) {
     // send JSON file to the frontend if any of these fields are empty or password doesn't contain a number
-    res
-      .status(401)
-      .json({
-        message:
-          "All fields need to be filled and password must contain a number! 🤨"
-      });
+    res.status(401).json({
+      message:
+        "All fields need to be filled and password must contain a number! 🤨"
+    });
     return;
   }
 
   User.findOne({ email })
     .then(foundUser => {
       if (foundUser !== null) {
-        res
-          .status(401)
-          .json({
-            message: "A user with the same email is already registered!"
-          });
+        res.status(401).json({
+          message: "A user with the same email is already registered!"
+        });
         return;
       }
 
@@ -38,7 +34,16 @@ authRouter.post("/api/signup", (req, res, next) => {
       const salt = bcrypt.genSaltSync(bcryptSalt);
       const encryptedPassword = bcrypt.hashSync(password, salt);
 
-      User.create({ fullName, email, encryptedPassword })
+      User.create({
+        fullName,
+        email,
+        encryptedPassword,
+        score: 0
+        // completedActs: []
+        // suggestedActs: Act.find()
+        //   .then(allActs => res.json({ allActs }))
+        //   .catch(err => console.log("Error while displaying all acts ", err))
+      })
         .then(userDoc => {
           // if all good, log in the user automatically
           // "req.login()" is a Passport method that calls "serializeUser()"
@@ -46,11 +51,9 @@ authRouter.post("/api/signup", (req, res, next) => {
 
           req.login(userDoc, err => {
             if (err) {
-              res
-                .status(401)
-                .json({
-                  message: "Something happened when logging in after the signup"
-                });
+              res.status(401).json({
+                message: "Something happened when logging in after the signup"
+              });
               return;
             }
             userDoc.encryptedPassword = undefined;
@@ -73,11 +76,9 @@ authRouter.post("/api/login", (req, res, next) => {
 
     req.login(userDoc, err => {
       if (err) {
-        res
-          .status(500)
-          .json({
-            message: "Something went wrong with getting user object from DB"
-          });
+        res.status(500).json({
+          message: "Something went wrong with getting user object from DB"
+        });
         return;
       }
       // set password to undefined so it doesn't get revealed in the client side (browser ==> react app)
