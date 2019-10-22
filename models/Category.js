@@ -10,9 +10,6 @@ const categorySchema = new Schema({
   description: {
     type: String,
     required: true
-  },
-  actions: {
-    type: Array
   }
 });
 

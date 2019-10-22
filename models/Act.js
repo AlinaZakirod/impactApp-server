@@ -11,19 +11,17 @@ const actSchema = new Schema({
     type: String,
     required: true
   },
-  maker: {
+  author: {
     type: Schema.Types.ObjectId,
     ref: "User"
   },
-  score: {
+  value: {
     type: Number
   },
-  category: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Category"
-    }
-  ]
+  category: {
+    type: Schema.Types.ObjectId,
+    ref: "Category"
+  }
 });
 
 const Act = mongoose.model("Act", actSchema);

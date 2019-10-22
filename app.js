@@ -87,4 +87,6 @@ app.use("/", authRoutes);
 
 app.use("/", require("./routes/categories.routes"));
 
+app.use("/", require("./routes/act.routes"));
+
 module.exports = app;
