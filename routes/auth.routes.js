@@ -3,6 +3,7 @@ const express = require("express");
 const authRouter = express.Router();
 
 const User = require("../models/User");
+const Act = require("../models/Act");
 
 const bcrypt = require("bcryptjs");
 
@@ -34,35 +35,70 @@ authRouter.post("/api/signup", (req, res, next) => {
       const salt = bcrypt.genSaltSync(bcryptSalt);
       const encryptedPassword = bcrypt.hashSync(password, salt);
 
-      User.create({
-        fullName,
-        email,
-        encryptedPassword,
-        score: 0
-        // completedActs: []
-        // suggestedActs: Act.find()
-        //   .then(allActs => res.json({ allActs }))
-        //   .catch(err => console.log("Error while displaying all acts ", err))
-      })
-        .then(userDoc => {
-          // if all good, log in the user automatically
-          // "req.login()" is a Passport method that calls "serializeUser()"
-          // (that saves the USER ID in the session)
-
-          req.login(userDoc, err => {
-            if (err) {
-              res.status(401).json({
-                message: "Something happened when logging in after the signup"
-              });
-              return;
-            }
-            userDoc.encryptedPassword = undefined;
-            res.status(200).json({ userDoc });
+      Act.find()
+        .then(allSuggestedActs => {
+          const user = new User({
+            fullName,
+            email,
+            encryptedPassword,
+            score: 0,
+            suggestedActs: []
           });
+          allSuggestedActs.forEach(oneAct => {
+            // console.log("one act -====== ", oneAct);
+            user.suggestedActs.push(oneAct._id);
+          });
+          // console.log("the new user ))))))) ", user);
+          user
+            .save()
+            .then(updatedUserSuggestedActs => {
+              // res.status(200).json(updatedUserSuggestedActs);
+              // console.log(">>>>>>>>> ", updatedUserSuggestedActs);
+
+              // if all good, log in the user automatically
+              // "req.login()" is a Passport method that calls "serializeUser()"
+              // (that saves the USER ID in the session)
+
+              req.login(updatedUserSuggestedActs, err => {
+                if (err) {
+                  console.log(
+                    "error when logging in after sign up *************** ",
+                    err
+                  );
+                  // res.status(401).json({
+                  //   message:
+                  //     "Something happened when logging in after the signup"
+                  // });
+                  console.log("something before the return");
+
+                  return;
+                }
+
+                // updatedUserSuggestedActs.encryptedPassword = undefined;
+                console.log("something before that res status right there");
+                // res.status(200).json(updatedUserSuggestedActs);
+
+                console.log(
+                  "SUCCESS    =======     ",
+                  updatedUserSuggestedActs,
+                  req.session
+                );
+                res.json(updatedUserSuggestedActs);
+                return;
+              });
+            })
+            .catch(err => res.status(400).json(err));
         })
-        .catch(err => next(err)); // close User.create()
+        .catch(
+          err =>
+            console.log(
+              "error while creating array of suggested Acts in  User signup route ",
+              err
+            )
+          // res.status(400).json(err)
+        );
     })
-    .catch(err => next(err)); // close User.findOne()
+    .catch(err => res.status(400).json(err)); // close User.findOne()
 });
 
 authRouter.post("/api/login", (req, res, next) => {

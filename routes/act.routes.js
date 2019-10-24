@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Act = require("../models/Act");
-const Category = require("../models/Category");
+// const Category = require("../models/Category");
 const User = require("../models/User");
 
 //Create Act route
@@ -41,20 +41,20 @@ router.post("/act/:actId/delete", (req, res, next) => {
 
 //Edit act route:
 router.post("/act/:actId/update", (req, res, next) => {
-  Act.findById(req.param.actId)
+  console.log(req.body);
+  Act.findById(req.params.actId)
     .then(theAct => {
+      console.log("-=-=-=-=-=-=-", theAct);
       //we update not the Act itself, but the User who did the Act: Act changes score of the User and the completed and suggested acts
-      console.log(req.user.completedActs);
-      console.log(req.user.suggestedActs);
-      console.log(req.user);
+
       User.findByIdAndUpdate(
         req.user._id,
         {
-          score: (req.user.score = +req.body.value),
-          // score: req.body.value + req.body.currentScore,
+          // score: (req.user.score = +req.body.value),
+          score: Number(req.body.value) + Number(req.body.currentScore),
 
-          $push: { completedActs: theAct },
-          $pull: { suggestedActs: theAct }
+          $push: { completedActs: theAct._id },
+          $pull: { suggestedActs: theAct._id }
         },
         { new: true }
       )
