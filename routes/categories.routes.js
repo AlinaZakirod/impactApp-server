@@ -24,7 +24,7 @@ router.post("/category/create", (req, res, next) => {
 });
 
 // Read 1  display all categories in the home page
-router.post("/", (req, res, next) => {
+router.get("/category/allCats", (req, res, next) => {
   Category.find()
     .then(allCategories => res.json({ allCategories }))
     .catch(err => console.log("Error displaying all categories", err));

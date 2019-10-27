@@ -2,27 +2,31 @@ const express = require("express");
 const router = express.Router();
 
 const Act = require("../models/Act");
-// const Category = require("../models/Category");
+const Category = require("../models/Category");
 const User = require("../models/User");
 
 //Create Act route
 router.post("/act/create", (req, res, next) => {
-  // Category.find()
-  // .then(allCategories => res.json({ allCategories }))
-  // .catch(err => console.log('error while getting all Categories for Act ', err))
-
-  console.log(req.body);
-
-  Act.create({
-    title: req.body.title,
-    description: req.body.description,
-    value: req.body.value,
-    category: req.body.categoryid
-  })
-    .then(newAct => {
-      res.json({ newAct });
+  const { title, description, value } = req.body;
+  Category.find()
+    .then(allCategories => {
+      Act.create({
+        title,
+        description,
+        value,
+        author: req.user._id,
+        category
+      });
+      allCategories
+        .forEach(oneCat => {
+          category.push(oneCat._id);
+        })
+        .then(newAct => {
+          res.json({ newAct });
+        })
+        .catch(err => console.log("Error while creating the Act", err));
     })
-    .catch(err => console.log("Error while creating a new act", err));
+    .catch(err => console.log("Error while getting Categories for Acts ", err));
 });
 
 //Read - display all acts

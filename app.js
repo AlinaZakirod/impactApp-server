@@ -46,7 +46,6 @@ app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
 
 // use CORS to allow access to this API from the frontend application
 // CORS -> Cross-Origin Resource Sharing
-
 app.use(
   cors({
     credentials: true,

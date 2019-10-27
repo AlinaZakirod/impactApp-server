@@ -130,6 +130,7 @@ authRouter.delete("/api/logout", (req, res, next) => {
   req.logout();
   // send empty "userDoc" when you log out
   res.json({ userDoc: null });
+  console.log(userDoc);
 });
 
 // check if user is logged in and if we are logged in what are user's details
@@ -144,4 +145,5 @@ authRouter.get("/api/checkuser", (req, res, next) => {
     res.status(401).json({ userDoc: null });
   }
 });
+
 module.exports = authRouter;
