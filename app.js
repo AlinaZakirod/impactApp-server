@@ -66,6 +66,13 @@ app.use(
 
 // 🚨🚨🚨 must come after the sessions 🚨🚨🚨
 require("./configs/passport/passport.setup")(app);
+app.use((req, res, next) => {
+  console.log(
+    "the req. user in app.js  ############################### ",
+    req.user
+  );
+  next();
+});
 
 // ./configs/passport/local.strategy AND ./configs/passport/serializers are not needed cuz they r required in passport.setup;
 

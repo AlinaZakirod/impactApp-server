@@ -10,6 +10,10 @@ const categorySchema = new Schema({
   description: {
     type: String,
     required: true
+  },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User"
   }
 });
 

@@ -33,7 +33,9 @@ router.get("/category/allCats", (req, res, next) => {
 //Delete category route:
 router.post("/category/:theId/delete", (req, res, next) => {
   Category.findByIdAndDelete(req.params.theId)
-    .then(() => console.log("deleted"))
+    .then(() => {
+      res.json({ response: "Deleted" });
+    })
     .catch(err => console.log("error while delteing the category: ", err));
 });
 
