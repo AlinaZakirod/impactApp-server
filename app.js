@@ -74,11 +74,6 @@ app.use((req, res, next) => {
   next();
 });
 
-//this will connect to index.js from build folder ( generated in client side)
-app.use((req, res, next) => {
-  res.sendFile(__dirname + "/public/index.html");
-});
-
 // ./configs/passport/local.strategy AND ./configs/passport/serializers are not needed cuz they r required in passport.setup;
 
 //initialize passport and passport-sessions
@@ -94,10 +89,15 @@ const index = require("./routes/index");
 app.use("/", index);
 
 const authRoutes = require("./routes/auth.routes");
-app.use("/", authRoutes);
+app.use("/api", authRoutes);
 
 app.use("/", require("./routes/categories.routes"));
 
 app.use("/", require("./routes/act.routes"));
+
+//this will connect to index.js from build folder ( generated in client side)
+app.use((req, res, next) => {
+  res.sendFile(__dirname + "/public/index.html");
+});
 
 module.exports = app;

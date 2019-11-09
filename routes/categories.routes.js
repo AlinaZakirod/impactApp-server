@@ -29,8 +29,12 @@ router.post("/category/create", (req, res, next) => {
 
 // Read 1  display all categories in the home page
 router.get("/category/allCats", (req, res, next) => {
+  console.log("1234567890987654321234567890876543234567");
   Category.find()
-    .then(allCategories => res.json({ allCategories }))
+    .then(allCategories => {
+      console.log("aaaaahhhhhhhhhh", allCategories);
+      res.json({ allCategories });
+    })
     .catch(err => console.log("Error displaying all categories", err));
 });
 
