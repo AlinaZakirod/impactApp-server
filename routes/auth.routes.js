@@ -10,7 +10,7 @@ const bcrypt = require("bcryptjs");
 const passport = require("passport");
 
 authRouter.post("/api/signup", (req, res, next) => {
-  console.log(req.body);
+  console.log("the user to sign up ", req.body);
   const { fullName, email, password } = req.body;
 
   if (fullName == "" || email == "" || password.match(/[0-9]/) === null) {
