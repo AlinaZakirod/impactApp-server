@@ -8,7 +8,7 @@ const User = require("../models/User");
 //Create Act route
 router.post("/act/create", (req, res, next) => {
   console.log("------ this is create route", req.body);
-  const { title, description, value, category } = req.body;
+  const { title, description, value, category, author } = req.body;
   Act.create({
     title,
     description,

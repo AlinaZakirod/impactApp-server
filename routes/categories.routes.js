@@ -1,7 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-
+const User = require("../models/User");
 const Category = require("../models/Category");
 
 // router.post("/category/new", (req, res, next) => {
@@ -11,10 +11,14 @@ const Category = require("../models/Category");
 router.post("/category/create", (req, res, next) => {
   // let newTitle = req.body.title;
   // let newDescription = req.body.description;
-
+  const { title, description, author } = req.body;
   Category.create({
-    title: req.body.title,
-    description: req.body.description,
+    // title: req.body.title,
+    // description: req.body.description,
+    // author: req.body.currentUser,
+    title,
+    description,
+    author,
     actions: []
   })
     .then(newCategory => {

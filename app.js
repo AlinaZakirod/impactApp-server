@@ -74,6 +74,11 @@ app.use((req, res, next) => {
   next();
 });
 
+//this will connect to index.js from build folder ( generated in client side)
+app.use((req, res, next) => {
+  res.sendFile(__dirname + "/public/index.html");
+});
+
 // ./configs/passport/local.strategy AND ./configs/passport/serializers are not needed cuz they r required in passport.setup;
 
 //initialize passport and passport-sessions
