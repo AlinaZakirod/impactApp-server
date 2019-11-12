@@ -83,7 +83,7 @@ authRouter.post("/api/signup", (req, res, next) => {
                   updatedUserSuggestedActs,
                   req.session
                 );
-                res.json(updatedUserSuggestedActs);
+                res.json({ updatedUserSuggestedActs });
                 return;
               });
             })

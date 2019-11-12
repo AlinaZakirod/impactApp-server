@@ -89,14 +89,14 @@ const index = require("./routes/index");
 app.use("/", index);
 
 const authRoutes = require("./routes/auth.routes");
-app.use("/api", authRoutes);
+app.use("/", authRoutes);
 
 app.use("/", require("./routes/categories.routes"));
 
 app.use("/", require("./routes/act.routes"));
 
-//this will connect to index.js from build folder ( generated in client side)
 app.use((req, res, next) => {
+  // If no routes match, send them the React HTML.
   res.sendFile(__dirname + "/public/index.html");
 });
 
