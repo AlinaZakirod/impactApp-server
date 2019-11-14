@@ -4,6 +4,7 @@ const authRouter = express.Router();
 
 const User = require("../models/User");
 const Act = require("../models/Act");
+const Category = require("../models/Category");
 
 const bcrypt = require("bcryptjs");
 
@@ -36,7 +37,9 @@ authRouter.post("/api/signup", (req, res, next) => {
       const encryptedPassword = bcrypt.hashSync(password, salt);
 
       Act.find()
+        // .populate("category")
         .then(allSuggestedActs => {
+          // console.log("hellloooooooo: ", allSuggestedActs);
           const user = new User({
             fullName,
             email,
@@ -52,40 +55,58 @@ authRouter.post("/api/signup", (req, res, next) => {
           user
             .save()
             .then(updatedUserSuggestedActs => {
+              User.findById(updatedUserSuggestedActs._id)
+                .populate({
+                  path: "suggestedActs",
+                  populate: {
+                    path: "category",
+                    model: "Category"
+                  }
+                })
+                .then(populatedUser =>
+                  req.login(populatedUser, err => {
+                    if (err) {
+                      console.log(
+                        "error when logging in after sign up *************** ",
+                        err
+                      );
+                      // res.status(401).json({
+                      //   message:
+                      //     "Something happened when logging in after the signup"
+                      // });
+                      console.log("something before the return");
+
+                      return;
+                    }
+
+                    // updatedUserSuggestedActs.encryptedPassword = undefined;
+                    // console.log("something before that res status right there");
+                    // res.status(200).json(updatedUserSuggestedActs);
+                    // updatedUserSuggestedActs.suggestedActs.forEach(actId => {
+                    //   Act.findById(actId)
+                    //     .then(fullAct => {
+                    //       console.log("fullAct: ", fullAct);
+                    //     })
+                    //     .catch(err => console.log("full act err"));
+                    // });
+                    // console.log(
+                    //   "SUCCESS    =======     ",
+                    //   updatedUserSuggestedActs
+                    // );
+                    res.json({ populatedUser });
+                    return;
+                  })
+                )
+                .catch();
+
+              console.log("kdahkdhkahdkhakdhkahdk: ", updatedUserSuggestedActs);
+
               // res.status(200).json(updatedUserSuggestedActs);
               // console.log(">>>>>>>>> ", updatedUserSuggestedActs);
 
               // if all good, log in the user automatically
               // "req.login()" is a Passport method that calls "serializeUser()"
               // (that saves the USER ID in the session)
-
-              req.login(updatedUserSuggestedActs, err => {
-                if (err) {
-                  console.log(
-                    "error when logging in after sign up *************** ",
-                    err
-                  );
-                  // res.status(401).json({
-                  //   message:
-                  //     "Something happened when logging in after the signup"
-                  // });
-                  console.log("something before the return");
-
-                  return;
-                }
-
-                // updatedUserSuggestedActs.encryptedPassword = undefined;
-                console.log("something before that res status right there");
-                // res.status(200).json(updatedUserSuggestedActs);
-
-                console.log(
-                  "SUCCESS    =======     ",
-                  updatedUserSuggestedActs,
-                  req.session
-                );
-                res.json({ updatedUserSuggestedActs });
-                return;
-              });
             })
             .catch(err => res.status(400).json(err));
         })
