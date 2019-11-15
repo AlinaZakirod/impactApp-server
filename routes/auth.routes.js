@@ -9,6 +9,41 @@ const Category = require("../models/Category");
 const bcrypt = require("bcryptjs");
 
 const passport = require("passport");
+const axios = require("axios");
+
+authRouter.post("/profile", (req, res, next) => {
+  console.log("INPUT FROM PROFILE", req.body);
+  const query = req.body;
+
+  // let user = `${process.env.COOLCLIMATE_USERNAME}`;
+  // let pass = `${process.env.COOLCLIMATE_PASSWORD}`;
+  // console.log("user: ", user, "pass: ", pass);
+
+  let config = {
+    auth: {
+      app_id: "fe1b79e6",
+      app_key: "7a47e4702a27b760f91378195e86012d"
+    }
+  };
+
+  axios
+    .post(
+      `${process.env.API_COOLCLIMATE}`,
+      { query },
+      { config }
+      // {
+      //   username: user,
+      //   password: pass
+      // }
+    )
+    .then(response => {
+      console.log("ssooooooo: ", response.data);
+      // res.json(response.data);
+    })
+    .catch(err => {
+      console.log("Error while getting response from Cool Climate API:", err);
+    });
+});
 
 authRouter.post("/api/signup", (req, res, next) => {
   console.log("the user to sign up ", req.body);
@@ -51,7 +86,7 @@ authRouter.post("/api/signup", (req, res, next) => {
             // console.log("one act -====== ", oneAct);
             user.suggestedActs.push(oneAct._id);
           });
-          // console.log("the new user ))))))) ", user);
+          console.log("the new user ))))))) ", user);
           user
             .save()
             .then(updatedUserSuggestedActs => {
@@ -157,11 +192,24 @@ authRouter.delete("/api/logout", (req, res, next) => {
 // check if user is logged in and if we are logged in what are user's details
 // this is the information that is useful for the frontend application
 authRouter.get("/api/checkuser", (req, res, next) => {
-  // console.log("do i have user: ", req.user);
+  console.log(">>>do i have user: ", req.user);
   if (req.user) {
     req.user.encryptedPassword = undefined;
+    User.findById(req.user._id)
+      .populate({
+        path: "suggestedActs",
+        populate: {
+          path: "category",
+          model: "Category"
+        }
+      })
+      .then(userWithGatheredInfo => {
+        console.log("New user in checkUser:", userWithGatheredInfo);
+        res.status(200).json({ userDoc: userWithGatheredInfo });
+        console.log("AFTER CHECKUSER:", userDoc);
+      })
+      .catch();
     // res.json(req.user)
-    res.status(200).json({ userDoc: req.user });
   } else {
     res.status(401).json({ userDoc: null });
   }

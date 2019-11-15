@@ -51,7 +51,27 @@ app.use(
     credentials: true,
     // this is the port where our react app is running
     // array of domains we accept the cookies from
-    origin: ["http://localhost:3000"]
+    origin: [
+      "http://localhost:3000",
+      "http://apis.berkeley.edu/coolclimate/footprint-defaults/"
+    ]
+    // origin: "*",
+    // methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    // origin: (origin, cb) => {
+    //   if (!origin) return cb(null, true);
+    //   if (allowedOrigins.indexOf(origin) === -1) {
+    //     let msg =
+    //       "The CORS policy for this site does not allow access from the specified Origin.";
+    //     return cb(new Error(msg), false);
+    //   }
+    //   return cb(null, true);
+    // },
+    // "Access-Control-Request-Headers": "*"
+    // options: {
+    //   Access-Control-Request-Method: "DELETE",
+    //   Access-Control-Request-Headers: ["origin", "x-requested-with"],
+    //   Origin: "*"
+    // }
   })
 );
 

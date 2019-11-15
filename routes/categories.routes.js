@@ -50,7 +50,7 @@ router.post("/category/:theId/delete", (req, res, next) => {
 //Edit  category route:
 router.post("/category/:theId/update", (req, res, next) => {
   Category.findByIdAndUpdate(req.params.theId, req.body)
-    .then(updatedCategory => console.log({ updatedCategory }))
+    .then(updatedCategory => res.json({ updatedCategory }))
     .catch(err => console.log("Error while updating category ", err));
 });
 
