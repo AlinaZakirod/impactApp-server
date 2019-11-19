@@ -10,6 +10,7 @@ const bcrypt = require("bcryptjs");
 
 const passport = require("passport");
 const axios = require("axios");
+const convert = require("xml-js");
 
 authRouter.post("/profile", (req, res, next) => {
   console.log("INPUT FROM PROFILE", req.body);
@@ -26,19 +27,19 @@ authRouter.post("/profile", (req, res, next) => {
     }
   };
 
+  let url = process.env.API_COOLCLIMATE;
+  url += "?op=get_defaults_and_results&input_size=1";
+  url += "&input_location=33312";
+  url += "&input_location_mode=1";
+  url += "&input_income=1";
+
   axios
-    .post(
-      `${process.env.API_COOLCLIMATE}`,
-      { query },
-      { config }
-      // {
-      //   username: user,
-      //   password: pass
-      // }
-    )
+    .post(url, {}, config)
     .then(response => {
-      console.log("ssooooooo: ", response.data);
-      // res.json(response.data);
+      let res = response.data;
+      let index = res.indexOf("grand_total");
+      let total = res.substr(index + 12, 9);
+      console.log("_______Search", total);
     })
     .catch(err => {
       console.log("Error while getting response from Cool Climate API:", err);
