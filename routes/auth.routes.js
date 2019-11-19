@@ -13,7 +13,7 @@ const axios = require("axios");
 const convert = require("xml-js");
 
 authRouter.post("/profile", (req, res, next) => {
-  console.log("INPUT FROM PROFILE", req.body);
+  console.log("INPUT FROM PROFILE", req.body.input_location);
   const query = req.body;
 
   // let user = `${process.env.COOLCLIMATE_USERNAME}`;
@@ -28,18 +28,23 @@ authRouter.post("/profile", (req, res, next) => {
   };
 
   let url = process.env.API_COOLCLIMATE;
-  url += "?op=get_defaults_and_results&input_size=1";
-  url += "&input_location=33312";
-  url += "&input_location_mode=1";
-  url += "&input_income=1";
+  url += "?op=get_defaults_and_results&input_size=";
+  url += req.body.input_size;
+  url += "&input_location=";
+  url += req.body.input_location;
+  url += "&input_location_mode=";
+  url += req.body.input_location_mode;
+  url += "&input_income=";
+  url += req.body.input_income;
 
   axios
     .post(url, {}, config)
     .then(response => {
-      let res = response.data;
-      let index = res.indexOf("grand_total");
-      let total = res.substr(index + 12, 9);
+      let dataFromApi = response.data;
+      let index = dataFromApi.indexOf("grand_total");
+      let total = dataFromApi.substr(index + 12, 8);
       console.log("_______Search", total);
+      res.json({ total });
     })
     .catch(err => {
       console.log("Error while getting response from Cool Climate API:", err);
