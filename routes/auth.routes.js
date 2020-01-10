@@ -12,13 +12,22 @@ const passport = require("passport");
 const axios = require("axios");
 const convert = require("xml-js");
 
-authRouter.post("/profile", (req, res, next) => {
+authRouter.get("/community", (req, res, next) => {
+  console.log("WHERE ARE MY USERS?!");
+  User.find()
+    .then(allUsers => res.json({ allUsers }))
+    .catch(err => console.log("Error while displaying all users ", err));
+});
+
+// router.get("/acts", (req, res, next) => {
+//   Act.find()
+//     .then(allActs => res.json({ allActs }))
+//     .catch(err => console.log("Error while displaying all acts ", err));
+// });
+
+authRouter.post("/profile/start", (req, res, next) => {
   console.log("INPUT FROM PROFILE", req.body.input_location);
   const query = req.body;
-
-  // let user = `${process.env.COOLCLIMATE_USERNAME}`;
-  // let pass = `${process.env.COOLCLIMATE_PASSWORD}`;
-  // console.log("user: ", user, "pass: ", pass);
 
   let config = {
     auth: {
@@ -49,6 +58,11 @@ authRouter.post("/profile", (req, res, next) => {
     .catch(err => {
       console.log("Error while getting response from Cool Climate API:", err);
     });
+});
+
+authRouter.post("/profile/household", (req, res, next) => {
+  const query = req.body;
+  console.log("HOUSEHOLD FROM PROFILE", req.body);
 });
 
 authRouter.post("/api/signup", (req, res, next) => {
